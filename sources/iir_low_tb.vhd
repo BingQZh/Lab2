@@ -36,8 +36,8 @@ begin
     begin
         hey : for i in 0 to 10 loop
             wait for clk_period * 1;
-
-            x <= "010101010101010101010101";
+            x <= "000000000011000000111001";
+            -- x <= "010101010101010101010101";
         end loop hey;
         
         wait for clk_period * 4;
