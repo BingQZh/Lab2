@@ -23,3 +23,10 @@ platform active {audio1761_icc_config}
 platform config -updatehw {D:/ENSC462/part2b/LAB2A_audio_pass_through_2/audio_pass_through/top_wrapper.xsa}
 platform clean
 platform generate
+platform active {audio1761_icc_config}
+platform config -updatehw {D:/ENSC462/github/GitHub/audio_pass_through/top_wrapper.xsa}
+platform clean
+platform generate
+platform config -updatehw {D:/ENSC462/part2b/LAB2A_audio_pass_through_2/audio_pass_through/top_wrapper.xsa}
+platform clean
+platform generate

@@ -7,7 +7,8 @@
       "name": "top",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
       "synth_flow_mode": "Hierarchical",
-      "tool_version": "2021.2"
+      "tool_version": "2021.2",
+      "validated": "true"
     },
     "design_tree": {
       "axi_iic": "",
@@ -26,12 +27,68 @@
       "DDR": {
         "mode": "Master",
         "vlnv_bus_definition": "xilinx.com:interface:ddrx:1.0",
-        "vlnv": "xilinx.com:interface:ddrx_rtl:1.0"
+        "vlnv": "xilinx.com:interface:ddrx_rtl:1.0",
+        "parameters": {
+          "AXI_ARBITRATION_SCHEME": {
+            "value": "TDM",
+            "value_src": "default"
+          },
+          "BURST_LENGTH": {
+            "value": "8",
+            "value_src": "default"
+          },
+          "CAN_DEBUG": {
+            "value": "false",
+            "value_src": "default"
+          },
+          "CAS_LATENCY": {
+            "value": "11",
+            "value_src": "default"
+          },
+          "CAS_WRITE_LATENCY": {
+            "value": "11",
+            "value_src": "default"
+          },
+          "CS_ENABLED": {
+            "value": "true",
+            "value_src": "default"
+          },
+          "DATA_MASK_ENABLED": {
+            "value": "true",
+            "value_src": "default"
+          },
+          "DATA_WIDTH": {
+            "value": "8",
+            "value_src": "default"
+          },
+          "MEMORY_TYPE": {
+            "value": "COMPONENTS",
+            "value_src": "default"
+          },
+          "MEM_ADDR_MAP": {
+            "value": "ROW_COLUMN_BANK",
+            "value_src": "default"
+          },
+          "SLOT": {
+            "value": "Single",
+            "value_src": "default"
+          },
+          "TIMEPERIOD_PS": {
+            "value": "1250",
+            "value_src": "default"
+          }
+        }
       },
       "FIXED_IO": {
         "mode": "Master",
         "vlnv_bus_definition": "xilinx.com:display_processing_system7:fixedio:1.0",
-        "vlnv": "xilinx.com:display_processing_system7:fixedio_rtl:1.0"
+        "vlnv": "xilinx.com:display_processing_system7:fixedio_rtl:1.0",
+        "parameters": {
+          "CAN_DEBUG": {
+            "value": "false",
+            "value_src": "default"
+          }
+        }
       },
       "iic": {
         "mode": "Master",
@@ -44,8 +101,24 @@
         "type": "clk",
         "direction": "O",
         "parameters": {
+          "CLK_DOMAIN": {
+            "value": "/clk_wiz_clk_out1",
+            "value_src": "ip_prop"
+          },
           "FREQ_HZ": {
             "value": "12288000"
+          },
+          "FREQ_TOLERANCE_HZ": {
+            "value": "0",
+            "value_src": "default"
+          },
+          "INSERT_VIP": {
+            "value": "0",
+            "value_src": "default"
+          },
+          "PHASE": {
+            "value": "0.0",
+            "value_src": "ip_prop"
           }
         }
       },
@@ -120,7 +193,7 @@
             "value": "Native"
           },
           "C_NUM_OF_PROBES": {
-            "value": "5"
+            "value": "10"
           }
         }
       },
@@ -2120,7 +2193,13 @@
         "ports": {
           "rst": {
             "type": "rst",
-            "direction": "I"
+            "direction": "I",
+            "parameters": {
+              "POLARITY": {
+                "value": "ACTIVE_LOW",
+                "value_src": "const_prop"
+              }
+            }
           },
           "fpga_clk": {
             "type": "clk",
@@ -2129,6 +2208,14 @@
               "ASSOCIATED_RESET": {
                 "value": "rst",
                 "value_src": "constant"
+              },
+              "FREQ_HZ": {
+                "value": "100000000",
+                "value_src": "user_prop"
+              },
+              "CLK_DOMAIN": {
+                "value": "top_processing_system7_0_0_FCLK_CLK0",
+                "value_src": "default_prop"
               }
             }
           },
@@ -2165,6 +2252,16 @@
           "audio_l_pl": {
             "direction": "O",
             "left": "23",
+            "right": "0"
+          },
+          "read_states": {
+            "direction": "O",
+            "left": "2",
+            "right": "0"
+          },
+          "write_states": {
+            "direction": "O",
+            "left": "2",
             "right": "0"
           },
           "sdata_out": {
@@ -2209,19 +2306,28 @@
       "I2S_audio_interface_0_audio_l_pl": {
         "ports": [
           "I2S_audio_interface_0/audio_l_pl",
-          "I2S_audio_interface_0/audio_l_adau"
+          "I2S_audio_interface_0/audio_l_adau",
+          "ila/probe9"
         ]
       },
       "I2S_audio_interface_0_audio_r_pl": {
         "ports": [
           "I2S_audio_interface_0/audio_r_pl",
-          "I2S_audio_interface_0/audio_r_adau"
+          "I2S_audio_interface_0/audio_r_adau",
+          "ila/probe8"
         ]
       },
       "I2S_audio_interface_0_audio_valid_pl": {
         "ports": [
           "I2S_audio_interface_0/audio_valid_pl",
-          "I2S_audio_interface_0/audio_valid_adau"
+          "I2S_audio_interface_0/audio_valid_adau",
+          "ila/probe7"
+        ]
+      },
+      "I2S_audio_interface_0_read_states": {
+        "ports": [
+          "I2S_audio_interface_0/read_states",
+          "ila/probe5"
         ]
       },
       "I2S_audio_interface_0_sdata_out": {
@@ -2229,6 +2335,12 @@
           "I2S_audio_interface_0/sdata_out",
           "sdata_out",
           "ila/probe4"
+        ]
+      },
+      "I2S_audio_interface_0_write_states": {
+        "ports": [
+          "I2S_audio_interface_0/write_states",
+          "ila/probe6"
         ]
       },
       "bclk_1": {

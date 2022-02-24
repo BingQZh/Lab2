@@ -2,12 +2,12 @@
 # Vivado v2021.2 (64-bit)
 # SW Build 3367213 on Tue Oct 19 02:48:09 MDT 2021
 # IP Build 3369179 on Thu Oct 21 08:25:16 MDT 2021
-# Start of session at: Fri Feb 18 11:12:55 2022
-# Process ID: 15316
-# Current directory: D:/ENSC462/part2b/LAB2A_audio_pass_through_2/audio_pass_through/audio_pass_through.runs/impl_1
+# Start of session at: Thu Feb 24 12:19:37 2022
+# Process ID: 27776
+# Current directory: D:/ENSC462/github/GitHub/audio_pass_through/audio_pass_through.runs/impl_1
 # Command line: vivado.exe -log top_wrapper.vdi -applog -product Vivado -messageDb vivado.pb -mode batch -source top_wrapper.tcl -notrace
-# Log file: D:/ENSC462/part2b/LAB2A_audio_pass_through_2/audio_pass_through/audio_pass_through.runs/impl_1/top_wrapper.vdi
-# Journal file: D:/ENSC462/part2b/LAB2A_audio_pass_through_2/audio_pass_through/audio_pass_through.runs/impl_1\vivado.jou
+# Log file: D:/ENSC462/github/GitHub/audio_pass_through/audio_pass_through.runs/impl_1/top_wrapper.vdi
+# Journal file: D:/ENSC462/github/GitHub/audio_pass_through/audio_pass_through.runs/impl_1\vivado.jou
 # Running On: DESKTOP-HD705MT, OS: Windows, CPU Frequency: 4008 MHz, CPU Physical cores: 4, Host memory: 68627 MB
 #-----------------------------------------------------------
 source top_wrapper.tcl -notrace

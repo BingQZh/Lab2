@@ -82,19 +82,19 @@ begin
     begin
 
         if rising_edge(fpga_clk) then
-            if rst = '1' then
-                BCLK_q2d_1 <= '0';
-                BCLK_q2d_2 <= '0';
-                BCLK_q2d_3 <= '0';
+            -- if rst = '1' then
+            --     BCLK_q2d_1 <= '0';
+            --     BCLK_q2d_2 <= '0';
+            --     BCLK_q2d_3 <= '0';
 
-                LRCLK_q2d_1 <= '0';
-                LRCLK_q2d_2 <= '0';
-                LRCLK_q2d_3 <= '0';
+            --     LRCLK_q2d_1 <= '0';
+            --     LRCLK_q2d_2 <= '0';
+            --     LRCLK_q2d_3 <= '0';
 
-                SDin_q2d_1 <= '0';
-                SDin_q2d_2 <= '0';
-                SDin_q2d_3 <= '0';
-            else
+            --     SDin_q2d_1 <= '0';
+            --     SDin_q2d_2 <= '0';
+            --     SDin_q2d_3 <= '0';
+            -- else
                 BCLK_q2d_1 <= bclk;
                 BCLK_q2d_2 <= BCLK_q2d_1;
                 BCLK_q2d_3 <= BCLK_q2d_2;
@@ -107,17 +107,17 @@ begin
                 SDin_q2d_2 <= SDin_q2d_1;
                 SDin_q2d_3 <= SDin_q2d_2;
             end if;
-        end if;
+        --end if;
     end process;
 
     SYNCHRONIZER_COMPARISON: process(fpga_clk)
     begin
         if rising_edge(fpga_clk) then
-            if rst = '1' then
-                validSDin <= '0';
-                validBCLK <= '0';
-                validLRCLK <= '0';
-            else
+            -- if rst = '1' then
+            --     validSDin <= '0';
+            --     validBCLK <= '0';
+            --     validLRCLK <= '0';
+            -- else
 
                 -- if BCLK_q2d_1 = BCLK_q2d_2 and BCLK_q2d_1 = BCLK_q2d_3 then
                     validBCLK <= BCLK_q2d_3;
@@ -131,21 +131,21 @@ begin
                     validSDin <= SDin_q2d_3;
                 -- end if;
 
-            end if;
+            --end if;
         end if;
     end process;
 
     READING_PROC: process(fpga_clk)
     begin
         if rising_edge(fpga_clk) then
-            if rst = '1' then
-                ReadState <= Initial;
-                audio_r_pl <= (others => '0');
-                audio_l_pl <= (others => '0');
-                i <= 0;
-                audio_valid_pl <= '0';
-                read_states <= "111";
-            else
+            -- if rst = '1' then
+            --     ReadState <= Initial;
+            --     audio_r_pl <= (others => '0');
+            --     audio_l_pl <= (others => '0');
+            --     i <= 0;
+            --     audio_valid_pl <= '0';
+            --     read_states <= "111";
+            -- else
             
                 case ReadState is
 
@@ -217,18 +217,18 @@ begin
 
                 end case;
             end if;
-        end if;
+        --end if;
     end process;
 
     WRITING_PROC: process(fpga_clk)
     begin
         if rising_edge(fpga_clk) then
-            if rst = '1' then
-                WriteState <= Initial;
-                o <= 23;
-                sdata_out <= '0';
-                write_states <= "111";
-            else
+            -- if rst = '1' then
+            --     WriteState <= Initial;
+            --     o <= 23;
+            --     sdata_out <= '0';
+            --     write_states <= "111";
+            -- else
 
                 case WriteState is
 
@@ -294,7 +294,7 @@ begin
                         end if;
                 end case;
             end if;
-        end if;
+        --end if;
     end process;
 
 end architecture;
