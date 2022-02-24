@@ -119,17 +119,17 @@ begin
                 validLRCLK <= '0';
             else
 
-                -- if BCLK_q2d_1 = BCLK_q2d_2 and BCLK_q2d_1 = BCLK_q2d_3 then
+                if BCLK_q2d_1 = BCLK_q2d_2 and BCLK_q2d_1 = BCLK_q2d_3 then
                     validBCLK <= BCLK_q2d_3;
-                -- end if;
+                end if;
 
-                -- if LRCLK_q2d_1 = LRCLK_q2d_2 and LRCLK_q2d_1 = LRCLK_q2d_3 then
+                if LRCLK_q2d_1 = LRCLK_q2d_2 and LRCLK_q2d_1 = LRCLK_q2d_3 then
                     validLRCLK <= LRCLK_q2d_3;
-                -- end if;
+                end if;
 
-                -- if SDin_q2d_1 = SDin_q2d_2 and SDin_q2d_1 = SDin_q2d_3 then
+                if SDin_q2d_1 = SDin_q2d_2 and SDin_q2d_1 = SDin_q2d_3 then
                     validSDin <= SDin_q2d_3;
-                -- end if;
+                end if;
 
             end if;
         end if;
