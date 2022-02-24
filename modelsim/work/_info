@@ -1,0 +1,100 @@
+m255
+K4
+z2
+!s11e vcom 2020.1 2020.02, Feb 28 2020
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+dD:/ENSC462/part2b/part2b-feb17
+Ei2s_audio_interface
+Z0 w1645729170
+Z1 DPx4 ieee 11 numeric_std 0 22 aU^R8eGcicLcUFIaBQSL>3
+Z2 DPx3 std 6 textio 0 22 zE1`LPoLg^DX3Oz^4Fj1K3
+Z3 DPx4 ieee 14 std_logic_1164 0 22 cVAk:aDinOX8^VGI1ekP<3
+!i122 0
+Z4 dD:/ENSC462/github/GitHub/modelsim
+Z5 8D:/ENSC462/github/GitHub/sources/I2S_audio_interface.vhd
+Z6 FD:/ENSC462/github/GitHub/sources/I2S_audio_interface.vhd
+l0
+L15 1
+VVTzOC:P]0Gi=G=>KjYGR73
+!s100 J0m5k3eDX7ifznHY_aIZF2
+Z7 OV;C;2020.1;71
+32
+Z8 !s110 1645731910
+!i10b 1
+Z9 !s108 1645731909.000000
+Z10 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|D:/ENSC462/github/GitHub/sources/I2S_audio_interface.vhd|
+Z11 !s107 D:/ENSC462/github/GitHub/sources/I2S_audio_interface.vhd|
+!i113 1
+Z12 o-work work -2002 -explicit
+Z13 tExplicit 1 CvgOpt 0
+Artl
+R1
+R2
+R3
+Z14 DEx4 work 19 i2s_audio_interface 0 22 VTzOC:P]0Gi=G=>KjYGR73
+!i122 0
+l76
+L32 253
+VmeNY6kbM5RiGfPV50>Xnz0
+!s100 8Ih;8hB=l7dUjB>IX4VY>1
+R7
+32
+R8
+!i10b 1
+R9
+R10
+R11
+!i113 1
+R12
+R13
+Ei2s_audio_interface_tb
+Z15 w1645162913
+Z16 DPx3 std 3 env 0 22 d?`1ck@NdeD@H3RZG7FgZ2
+R1
+R2
+R3
+!i122 1
+R4
+Z17 8D:/ENSC462/github/GitHub/sources/I2S_audio_interface_tb.vhd
+Z18 FD:/ENSC462/github/GitHub/sources/I2S_audio_interface_tb.vhd
+l0
+L8 1
+VEmmW9OWDnh]@;CU_=>XL]0
+!s100 8dl>4OKAA5=@@;@1FkVHn3
+R7
+32
+R8
+!i10b 1
+Z19 !s108 1645731910.000000
+Z20 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|D:/ENSC462/github/GitHub/sources/I2S_audio_interface_tb.vhd|
+!s107 D:/ENSC462/github/GitHub/sources/I2S_audio_interface_tb.vhd|
+!i113 1
+R12
+R13
+Asim
+R14
+R16
+R1
+R2
+R3
+DEx4 work 22 i2s_audio_interface_tb 0 22 EmmW9OWDnh]@;CU_=>XL]0
+!i122 1
+l36
+L11 69
+VHEkNX@c5^W]k:cl`QzJMB2
+!s100 YWiz>GNSBLT3Dkhe]HFLN1
+R7
+32
+R8
+!i10b 1
+R19
+R20
+Z21 !s107 D:/ENSC462/github/GitHub/sources/I2S_audio_interface_tb.vhd|
+!i113 1
+R12
+R13
