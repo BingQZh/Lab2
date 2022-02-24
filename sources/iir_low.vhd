@@ -40,7 +40,7 @@ architecture rtl of iir_low is
 
     signal prod_a0, prod_a1, prod_a2, prod_b1, prod_b2 : signed(width_internal-1 downto 0) := (others => '0');
 
-    signal sum_a, sum_b : std_logic_vector(width_internal-1 downto 0) := (others => '0');
+    signal sum_a, sum_b : signed(width_internal-1 downto 0) := (others => '0');
 begin
 
     SET_ZREGS: process(clk)
@@ -51,7 +51,6 @@ begin
                 x_0 <= (others => '0');
                 x_1 <= (others => '0');
                 x_2 <= (others => '0');
-                y_0 <= (others => '0');
                 y_1 <= (others => '0');
                 y_2 <= (others => '0');
             else
