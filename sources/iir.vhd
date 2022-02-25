@@ -1,22 +1,17 @@
--- lowpass filter values        Q2.30:
--- a0 = 0.003916123487156427    4204905
--- a1 = 0.007832246974312854    8409811
--- a2 = 0.003916123487156427    4204905
--- b1 = -1.8153396116625289     −1949206066
--- b2 = 0.8310041056111546      892283864
+----------------------------------------------------------------------------------
+-- Course: ENSC462
+-- Group #: 9 
+-- Engineer: Valeriya Svichkar and Bing Qiu Zhang
 
--- highpass filter values
--- a0 = 0.9115859293184209      978807938
--- a1 = -1.8231718586368417     −1957615877
--- a2 = 0.9115859293184209      978807938
--- b1 = -1.8153396116625289     −1949206066
--- b2 = 0.8310041056111546      892283864
+-- Module Name: IIR
+-- Project Name: Lab2C
+----------------------------------------------------------------------------------
 
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity iir_low is
+entity iir is
     generic(bit_width : integer := 24;
         width_internal : integer := 32;
         a0 : in integer; -- := 4204905;
@@ -33,7 +28,7 @@ entity iir_low is
         y : out std_logic_vector(bit_width-1 downto 0);
         valid_out : out std_logic
     );
-end iir_low;
+end iir;
 
 architecture rtl of iir_low is
     -- registers capturing previous values
@@ -111,3 +106,17 @@ begin
             else '0';
 
 end architecture;
+
+-- lowpass filter values        Q2.30:
+-- a0 = 0.003916123487156427    4204905
+-- a1 = 0.007832246974312854    8409811
+-- a2 = 0.003916123487156427    4204905
+-- b1 = -1.8153396116625289     −1949206066
+-- b2 = 0.8310041056111546      892283864
+
+-- highpass filter values
+-- a0 = 0.9115859293184209      978807938
+-- a1 = -1.8231718586368417     −1957615877
+-- a2 = 0.9115859293184209      978807938
+-- b1 = -1.8153396116625289     −1949206066
+-- b2 = 0.8310041056111546      892283864
