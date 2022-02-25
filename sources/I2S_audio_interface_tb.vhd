@@ -73,6 +73,19 @@ begin
         rst <= '1';
         wait for bclk_period * 100;
 
+        hey2 : for i in 0 to 500 loop
+            wait for bclk_period * 1;
+
+            if counter > 0 then
+                sdata_in <= test(counter);
+                counter <= counter - 1;
+            else
+                sdata_in <= test(counter);
+                counter <= 3; --23;
+            end if;
+
+        end loop hey2;
+
         finish;
     end process;
 

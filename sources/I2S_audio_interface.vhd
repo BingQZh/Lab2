@@ -25,6 +25,9 @@ entity I2S_audio_interface is
         audio_valid_pl : out std_logic;
         audio_r_pl : out std_logic_vector(23 downto 0);
         audio_l_pl : out std_logic_vector(23 downto 0);
+        read_states : out std_logic_vector(2 downto 0);
+        -- 000: Initial, 001: StartLeft, 010: Write/ReadLeft, 011: EndLeft, 100: StartRight, 101: Write/ReadRight, 111: rst
+        write_states : out std_logic_vector(2 downto 0);
         sdata_out : out std_logic
     );
 end I2S_audio_interface;
@@ -79,7 +82,7 @@ begin
     begin
 
         if rising_edge(fpga_clk) then
-            if rst = '1' then
+            if rst = '0' then
                 BCLK_q2d_1 <= '0';
                 BCLK_q2d_2 <= '0';
                 BCLK_q2d_3 <= '0';
@@ -110,23 +113,23 @@ begin
     SYNCHRONIZER_COMPARISON: process(fpga_clk)
     begin
         if rising_edge(fpga_clk) then
-            if rst = '1' then
+            if rst = '0' then
                 validSDin <= '0';
                 validBCLK <= '0';
                 validLRCLK <= '0';
             else
 
-                -- if BCLK_q2d_1 = BCLK_q2d_2 and BCLK_q2d_1 = BCLK_q2d_3 then
+                if BCLK_q2d_1 = BCLK_q2d_2 and BCLK_q2d_1 = BCLK_q2d_3 then
                     validBCLK <= BCLK_q2d_3;
-                -- end if;
+                end if;
 
-                -- if LRCLK_q2d_1 = LRCLK_q2d_2 and LRCLK_q2d_1 = LRCLK_q2d_3 then
+                if LRCLK_q2d_1 = LRCLK_q2d_2 and LRCLK_q2d_1 = LRCLK_q2d_3 then
                     validLRCLK <= LRCLK_q2d_3;
-                -- end if;
+                end if;
 
-                -- if SDin_q2d_1 = SDin_q2d_2 and SDin_q2d_1 = SDin_q2d_3 then
+                if SDin_q2d_1 = SDin_q2d_2 and SDin_q2d_1 = SDin_q2d_3 then
                     validSDin <= SDin_q2d_3;
-                -- end if;
+                end if;
 
             end if;
         end if;
@@ -135,12 +138,13 @@ begin
     READING_PROC: process(fpga_clk)
     begin
         if rising_edge(fpga_clk) then
-            if rst = '1' then
+            if rst = '0' then
                 ReadState <= Initial;
                 audio_r_pl <= (others => '0');
                 audio_l_pl <= (others => '0');
                 i <= 0;
                 audio_valid_pl <= '0';
+                read_states <= "111";
             else
             
                 case ReadState is
@@ -148,6 +152,7 @@ begin
                     -- In this state, we are checking for the first falling edge of the LR clk
                     -- At the falling edge, we will move on to StartLeft state
                     when Initial =>
+                        read_states <= "000";
                         if Falling_Edge_Check(LRCLK_q2d_2, LRCLK_q2d_3) = '1' then -- falling edge of LR clk;
                             audio_valid_pl <= '0';
                             ReadState <= StartLeft;
@@ -157,6 +162,7 @@ begin
                     -- We can only start reading the bits after the rising edge of B clk
                     -- Once we see the rising edge of the B clk, we move on to the ReadLeft state
                     when StartLeft =>
+                        read_states <= "001";
                         if Rising_Edge_Check(BCLK_q2d_2, BCLK_q2d_3) = '1' then -- rising edge of B clk;
                         --wait until bResults(1) = '1'; --rising_edge(BCLK_q2d_3);
                             ReadState <= ReadLeft;
@@ -166,6 +172,7 @@ begin
                     -- In this state, we are reading the bits and putting it into a 24 bit vector
                     -- After reading 24 bits, we will move on the the EndLeft state
                     when ReadLeft =>
+                        read_states <= "010";
                         if Rising_Edge_Check(BCLK_q2d_2, BCLK_q2d_3) = '1' then -- rising edge of B clk
                             if i >= 0 then
                                 LeftChannel(i) <= validSDin;
@@ -178,6 +185,7 @@ begin
                     -- In this state, we are checking when the right channel begins
                     -- When LR clk has a rising edge, we will move on to StartRight state
                     when EndLeft =>
+                        read_states <= "011";
                         if Rising_Edge_Check(LRCLK_q2d_2, LRCLK_q2d_3) = '1' then
                             ReadState <= StartRight;
                         end if;
@@ -185,6 +193,7 @@ begin
                     -- In this state, we are checking for the rising edge of the B clk
                     -- Then we will move onto ReadRight state
                     when StartRight =>
+                        read_states <= "100";
                         if Rising_Edge_Check(BCLK_q2d_2, BCLK_q2d_3) = '1' then
                             ReadState <= ReadRight;
                             i <= 23;
@@ -192,7 +201,8 @@ begin
 
                     -- In this state, we are reading the bits and putting it into a 24 bit vector
                     -- After reading 24 bits, we will output the vectors and reset the state to Initial
-                    when ReadRight => 
+                    when ReadRight =>
+                        read_states <= "101";
                         if Rising_Edge_Check(BCLK_q2d_2, BCLK_q2d_3) = '1' then 
                             if i >= 0 then
                                 RightChannel(i) <= validSDin;
@@ -213,10 +223,11 @@ begin
     WRITING_PROC: process(fpga_clk)
     begin
         if rising_edge(fpga_clk) then
-            if rst = '1' then
+            if rst = '0' then
                 WriteState <= Initial;
                 o <= 23;
                 sdata_out <= '0';
+                write_states <= "111";
             else
 
                 case WriteState is
@@ -224,7 +235,7 @@ begin
                     -- In this state, we are checking for the first falling edge of the LR clk
                     -- At the falling edge, we will move on to StartLeft state
                     when Initial =>
-
+                        write_states <= "000";
                         if audio_valid_adau = '1' then
                             if Falling_Edge_Check(LRCLK_q2d_2, LRCLK_q2d_3) = '1' then
                                 WriteState <= StartLeft;
@@ -234,6 +245,7 @@ begin
                     -- In this state, we are checking for the rising edge of the B clk
                     -- At the rising edge, we will move on to the WriteLeft state
                     when StartLeft =>
+                        write_states <= "001";
                         if Rising_Edge_Check(BCLK_q2d_2, BCLK_q2d_3) = '1' then
                             WriteState <= WriteLeft;
                             o <= 23;
@@ -242,6 +254,7 @@ begin
                         -- In this state, we are outputting the vectors we recieved one bit at a time
                     -- after outputting 24 bits, we move on to the EndLeft state
                     when WriteLeft =>
+                        write_states <= "010";    
                         if Falling_Edge_Check(BCLK_q2d_2, BCLK_q2d_3) = '1' then
                             if o >= 0 then
                                 sdata_out <= audio_l_adau(o);
@@ -253,12 +266,14 @@ begin
 
                     -- In this state, we are waiting for the rising edge of the LR clk before we move onto the StartRight state
                     when EndLeft =>
+                        write_states <= "011";
                         if Rising_Edge_Check(LRCLK_q2d_2, LRCLK_q2d_3) = '1' then
                             WriteState <= StartRight;
                         end if;
 
                     -- In this state, we are waiting for the rising edge of the B clk before moving on to the WriteRight state
                     when StartRight =>
+                        write_states <= "100";
                         if Rising_Edge_Check(BCLK_q2d_2, BCLK_q2d_3) = '1' then
                             WriteState <= WriteRight;
                             o <= 23;
@@ -266,7 +281,8 @@ begin
 
                     -- In this state, we are outputting the vectors we recieved one bit at a time
                     -- after outputting 24 bits, we reset the state to Initial, and set the valid bit to 0
-                    when WriteRight => 
+                    when WriteRight =>
+                        write_states <= "101";
                         if Falling_Edge_Check(BCLK_q2d_2, BCLK_q2d_3) = '1' then
                             if o >= 0 then
                                 sdata_out <= audio_r_adau(o);
