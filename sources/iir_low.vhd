@@ -83,20 +83,20 @@ begin
                      width_internal) * to_signed(b1, width_internal), width_internal-2), width_internal)) + (resize(shift_right(resize(signed(y_1),
                      width_internal) * to_signed(b2, width_internal), width_internal-2), width_internal))), bit_width));
 
-                    -- prod_a0 <= resize(shift_right(resize(signed(x), width_internal) * to_signed(a0, width_internal), width_internal-2), width_internal);
-                    -- -- multiply x-1 by a1
-                    -- prod_a1 <= resize(shift_right(resize(signed(x_1), width_internal) * to_signed(a1, width_internal), width_internal-2), width_internal);
-                    -- -- multiply x-1 by a2
-                    -- prod_a2 <= resize(shift_right(resize(signed(x_2), width_internal) * to_signed(a2, width_internal), width_internal-2), width_internal);
-                    -- -- add them up
-                    -- -- sum_a <= prod_a0 + prod_a1 + prod_a2;
+                    prod_a0 <= resize(shift_right(resize(signed(x), width_internal) * to_signed(a0, width_internal), width_internal-2), width_internal);
+                    -- multiply x-1 by a1
+                    prod_a1 <= resize(shift_right(resize(signed(x_1), width_internal) * to_signed(a1, width_internal), width_internal-2), width_internal);
+                    -- multiply x-1 by a2
+                    prod_a2 <= resize(shift_right(resize(signed(x_2), width_internal) * to_signed(a2, width_internal), width_internal-2), width_internal);
+                    -- add them up
+                    -- sum_a <= prod_a0 + prod_a1 + prod_a2;
 
-                    -- -- multiply y-1 by b1
-                    -- prod_b1 <= resize(shift_right(resize(signed((prod_a0 + prod_a1 + prod_a2) - (prod_b1 + prod_b2)), width_internal) * to_signed(b1, width_internal), width_internal-2), width_internal);
-                    -- -- multiply y-2 by b2
-                    -- prod_b2 <= resize(shift_right(resize(signed(y_1), width_internal) * to_signed(b2, width_internal), width_internal-2), width_internal);
-                    -- -- subtract them up
-                    -- -- sum_b <= -prod_b1 - prod_b2;
+                    -- multiply y-1 by b1
+                    prod_b1 <= resize(shift_right(resize(signed((prod_a0 + prod_a1 + prod_a2) - (prod_b1 + prod_b2)), width_internal) * to_signed(b1, width_internal), width_internal-2), width_internal);
+                    -- multiply y-2 by b2
+                    prod_b2 <= resize(shift_right(resize(signed(y_1), width_internal) * to_signed(b2, width_internal), width_internal-2), width_internal);
+                    -- subtract them up
+                    -- sum_b <= -prod_b1 - prod_b2;
 
                     -- y equals the sum of both
                     -- y_1 <= std_logic_vector(resize((prod_a0 + prod_a1 + prod_a2) - (prod_b1 + prod_b2), bit_width));
@@ -116,6 +116,7 @@ begin
     end process;
 
     y <= y_1;
-    valid_out <= validbit;
+    valid_out <= '1' when to_integer(unsigned(y_1)) > 0 
+            else '0';
 
 end architecture;
