@@ -36,7 +36,7 @@ entity iir_low is
 end iir_low;
 
 architecture rtl of iir_low is
-    signal x_1, x_2, y_1, y_2 : std_logic_vector(bit_width-1 downto 0) := (others => '0');
+    signal x_1, x_2, y_1 : std_logic_vector(bit_width-1 downto 0) := (others => '0');
 
     signal prod_a0, prod_a1, prod_a2, prod_b1, prod_b2 : signed(width_internal-1 downto 0) := (others => '0');
 
@@ -51,13 +51,11 @@ begin
                 x_1 <= (others => '0');
                 x_2 <= (others => '0');
                 -- y_1 <= (others => '0');
-                y_2 <= (others => '0');
+                -- y_2 <= (others => '0');
             else
                 if valid = '1' then
                     x_1 <= x;
                     x_2 <= x_1;
-                    -- y_1 <= y_0;
-                    y_2 <= y_1;
                 end if;
             end if;
         end if;
@@ -82,9 +80,9 @@ begin
                     -- sum_a <= prod_a0 + prod_a1 + prod_a2;
 
                     -- multiply y-1 by b1
-                    prod_b1 <= resize(shift_right(resize(signed(y_1), width_internal) * to_signed(b1, width_internal), width_internal-2), width_internal);
+                    prod_b1 <= resize(shift_right(resize(signed((prod_a0 + prod_a1 + prod_a2) - (prod_b1 + prod_b2)), width_internal) * to_signed(b1, width_internal), width_internal-2), width_internal);
                     -- multiply y-2 by b2
-                    prod_b2 <= resize(shift_right(resize(signed(y_2), width_internal) * to_signed(b2, width_internal), width_internal-2), width_internal);
+                    prod_b2 <= resize(shift_right(resize(signed(y_1), width_internal) * to_signed(b2, width_internal), width_internal-2), width_internal);
                     -- subtract them up
                     -- sum_b <= -prod_b1 - prod_b2;
 
