@@ -35,12 +35,23 @@ begin
     SEQUENCER_PROC : process
     begin
         hey : for i in 0 to 10 loop
+            if i > 6 then
+                rst <= '1';
+            end if;
             x <= "000000000011000000111001";
             -- x <= "010101010101010101010101";
             wait for clk_period * 1;
         end loop hey;
+
+        rst <= '0';
+
+        hey2 : for i in 0 to 5 loop
+            x <= "000000000100000000101001";
+            -- x <= "010101010101010101010101";
+            wait for clk_period * 1;
+        end loop hey2;
         
-        wait for clk_period * 4;
+        wait for clk_period * 1;
 
         -- 0110000010110000011001110100001100001
 

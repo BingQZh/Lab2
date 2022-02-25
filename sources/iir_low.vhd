@@ -19,11 +19,11 @@ use ieee.numeric_std.all;
 entity iir_low is
     generic(bit_width : integer := 24;
         width_internal : integer := 32;
-        a0 : in integer := 4204905;
-        a1 : in integer := 8409811;
-        a2 : in integer := 4204905;
-        b1 : in integer := -1949206066;
-        b2 : in integer := 892283864
+        a0 : in integer; -- := 4204905;
+        a1 : in integer; -- := 8409811;
+        a2 : in integer; -- := 4204905;
+        b1 : in integer; -- := -1949206066;
+        b2 : in integer -- := 892283864
     );
     port (
         clk : in std_logic;
@@ -40,7 +40,8 @@ architecture rtl of iir_low is
 
     signal prod_a0, prod_a1, prod_a2, prod_b1, prod_b2 : signed(width_internal-1 downto 0) := (others => '0');
 
-    -- signal sum_a, sum_b : signed(width_internal-1 downto 0) := (others => '0');
+    signal validbit : std_logic := '0';
+
 begin
 
     SET_ZREGS: process(clk)
@@ -50,8 +51,6 @@ begin
             if rst = '1' then
                 x_1 <= (others => '0');
                 x_2 <= (others => '0');
-                -- y_1 <= (others => '0');
-                -- y_2 <= (others => '0');
             else
                 if valid = '1' then
                     x_1 <= x;
@@ -66,33 +65,57 @@ begin
 
         if rising_edge(clk) then
             if rst = '1' then
-                -- x <= (others => '0');
-                -- valid <= '0';
+                prod_a0 <= (others => '0');
+                prod_a1 <= (others => '0');
+                prod_a2 <= (others => '0');
+                prod_b1 <= (others => '0');
+                prod_b2 <= (others => '0');
+                y_1 <= (others => '0');
+                validbit <= '0';
             else
                 if valid = '1' then
                     -- multiply x by a0
-                    prod_a0 <= resize(shift_right(resize(signed(x), width_internal) * to_signed(a0, width_internal), width_internal-2), width_internal);
-                    -- multiply x-1 by a1
-                    prod_a1 <= resize(shift_right(resize(signed(x_1), width_internal) * to_signed(a1, width_internal), width_internal-2), width_internal);
-                    -- multiply x-1 by a2
-                    prod_a2 <= resize(shift_right(resize(signed(x_2), width_internal) * to_signed(a2, width_internal), width_internal-2), width_internal);
-                    -- add them up
-                    -- sum_a <= prod_a0 + prod_a1 + prod_a2;
 
-                    -- multiply y-1 by b1
-                    prod_b1 <= resize(shift_right(resize(signed((prod_a0 + prod_a1 + prod_a2) - (prod_b1 + prod_b2)), width_internal) * to_signed(b1, width_internal), width_internal-2), width_internal);
-                    -- multiply y-2 by b2
-                    prod_b2 <= resize(shift_right(resize(signed(y_1), width_internal) * to_signed(b2, width_internal), width_internal-2), width_internal);
-                    -- subtract them up
-                    -- sum_b <= -prod_b1 - prod_b2;
+                    y_1 <= std_logic_vector(resize(((resize(shift_right(resize(signed(x), width_internal) * to_signed(a0, width_internal),
+                     width_internal-2), width_internal)) + (resize(shift_right(resize(signed(x_1), width_internal) * to_signed(a1, width_internal), 
+                     width_internal-2), width_internal)) + (resize(shift_right(resize(signed(x_2), width_internal) * to_signed(a2, width_internal), 
+                     width_internal-2), width_internal))) - ((resize(shift_right(resize(signed((prod_a0 + prod_a1 + prod_a2) - (prod_b1 + prod_b2)),
+                     width_internal) * to_signed(b1, width_internal), width_internal-2), width_internal)) + (resize(shift_right(resize(signed(y_1),
+                     width_internal) * to_signed(b2, width_internal), width_internal-2), width_internal))), bit_width));
+
+                    -- prod_a0 <= resize(shift_right(resize(signed(x), width_internal) * to_signed(a0, width_internal), width_internal-2), width_internal);
+                    -- -- multiply x-1 by a1
+                    -- prod_a1 <= resize(shift_right(resize(signed(x_1), width_internal) * to_signed(a1, width_internal), width_internal-2), width_internal);
+                    -- -- multiply x-1 by a2
+                    -- prod_a2 <= resize(shift_right(resize(signed(x_2), width_internal) * to_signed(a2, width_internal), width_internal-2), width_internal);
+                    -- -- add them up
+                    -- -- sum_a <= prod_a0 + prod_a1 + prod_a2;
+
+                    -- -- multiply y-1 by b1
+                    -- prod_b1 <= resize(shift_right(resize(signed((prod_a0 + prod_a1 + prod_a2) - (prod_b1 + prod_b2)), width_internal) * to_signed(b1, width_internal), width_internal-2), width_internal);
+                    -- -- multiply y-2 by b2
+                    -- prod_b2 <= resize(shift_right(resize(signed(y_1), width_internal) * to_signed(b2, width_internal), width_internal-2), width_internal);
+                    -- -- subtract them up
+                    -- -- sum_b <= -prod_b1 - prod_b2;
 
                     -- y equals the sum of both
-                    y_1 <= std_logic_vector(resize((prod_a0 + prod_a1 + prod_a2) - (prod_b1 + prod_b2), bit_width));
+                    -- y_1 <= std_logic_vector(resize((prod_a0 + prod_a1 + prod_a2) - (prod_b1 + prod_b2), bit_width));
+                    if to_integer(unsigned(std_logic_vector(resize(((resize(shift_right(resize(signed(x), width_internal) * to_signed(a0, width_internal),
+                    width_internal-2), width_internal)) + (resize(shift_right(resize(signed(x_1), width_internal) * to_signed(a1, width_internal), 
+                    width_internal-2), width_internal)) + (resize(shift_right(resize(signed(x_2), width_internal) * to_signed(a2, width_internal), 
+                    width_internal-2), width_internal))) - ((resize(shift_right(resize(signed((prod_a0 + prod_a1 + prod_a2) - (prod_b1 + prod_b2)),
+                    width_internal) * to_signed(b1, width_internal), width_internal-2), width_internal)) + (resize(shift_right(resize(signed(y_1),
+                    width_internal) * to_signed(b2, width_internal), width_internal-2), width_internal))), bit_width)))) > 0 then
+                        validbit <= '1';
+                    else
+                        validbit <= '0';
+                    end if;
                 end if;
             end if;
         end if;
     end process;
 
     y <= y_1;
+    valid_out <= validbit;
 
 end architecture;
