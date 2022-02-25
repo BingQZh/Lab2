@@ -36,11 +36,11 @@ entity iir_low is
 end iir_low;
 
 architecture rtl of iir_low is
-    signal x_0, x_1, x_2, y_0, y_1, y_2 : std_logic_vector(bit_width-1 downto 0) := (others => '0');
+    signal x_1, x_2, y_1, y_2 : std_logic_vector(bit_width-1 downto 0) := (others => '0');
 
     signal prod_a0, prod_a1, prod_a2, prod_b1, prod_b2 : signed(width_internal-1 downto 0) := (others => '0');
 
-    signal sum_a, sum_b : signed(width_internal-1 downto 0) := (others => '0');
+    -- signal sum_a, sum_b : signed(width_internal-1 downto 0) := (others => '0');
 begin
 
     SET_ZREGS: process(clk)
@@ -48,17 +48,15 @@ begin
 
         if rising_edge(clk) then
             if rst = '1' then
-                x_0 <= (others => '0');
                 x_1 <= (others => '0');
                 x_2 <= (others => '0');
-                y_1 <= (others => '0');
+                -- y_1 <= (others => '0');
                 y_2 <= (others => '0');
             else
                 if valid = '1' then
-                    x_0 <= x;
-                    x_1 <= x_0;
+                    x_1 <= x;
                     x_2 <= x_1;
-                    y_1 <= y_0;
+                    -- y_1 <= y_0;
                     y_2 <= y_1;
                 end if;
             end if;
@@ -81,22 +79,22 @@ begin
                     -- multiply x-1 by a2
                     prod_a2 <= resize(shift_right(resize(signed(x_2), width_internal) * to_signed(a2, width_internal), width_internal-2), width_internal);
                     -- add them up
-                    sum_a <= prod_a0 + prod_a1 + prod_a2;
+                    -- sum_a <= prod_a0 + prod_a1 + prod_a2;
 
                     -- multiply y-1 by b1
                     prod_b1 <= resize(shift_right(resize(signed(y_1), width_internal) * to_signed(b1, width_internal), width_internal-2), width_internal);
                     -- multiply y-2 by b2
                     prod_b2 <= resize(shift_right(resize(signed(y_2), width_internal) * to_signed(b2, width_internal), width_internal-2), width_internal);
                     -- subtract them up
-                    sum_b <= -prod_b1 - prod_b2;
+                    -- sum_b <= -prod_b1 - prod_b2;
 
                     -- y equals the sum of both
-                    y_0 <= std_logic_vector(resize(sum_a + sum_b, bit_width));
+                    y_1 <= std_logic_vector(resize((prod_a0 + prod_a1 + prod_a2) - (prod_b1 + prod_b2), bit_width));
                 end if;
             end if;
         end if;
     end process;
 
-    y <= y_0;
+    y <= y_1;
 
 end architecture;
