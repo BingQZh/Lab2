@@ -30,7 +30,7 @@ entity iir is
     );
 end iir;
 
-architecture rtl of iir_low is
+architecture rtl of iir is
     -- registers capturing previous values
     signal x_1, x_2, y_1, y_2 : std_logic_vector(bit_width-1 downto 0) := (others => '0');
 
