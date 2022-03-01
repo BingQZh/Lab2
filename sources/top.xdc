@@ -11,6 +11,11 @@ set_property IOSTANDARD LVCMOS33 [get_ports bclk]
 set_property IOSTANDARD LVCMOS33 [get_ports lrclk]
 set_property IOSTANDARD LVCMOS33 [get_ports sdata_out]
 set_property IOSTANDARD LVCMOS33 [get_ports sdata_in]
+
+#set_property IOSTANDARD LVCMOS25 [get_ports sel_switch]
+set_property PACKAGE_PIN F22 [get_ports {sel_switch[0]}] # SW0
+set_property PACKAGE_PIN G22 [get_ports {sel_switch[1]}] # SW1
+
 set_property IOSTANDARD LVCMOS33 [get_ports iic_sda_io]
 set_property IOSTANDARD LVCMOS33 [get_ports iic_scl_io]
 
