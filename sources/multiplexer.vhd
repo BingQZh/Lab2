@@ -13,9 +13,8 @@ end multiplexer;
 architecture rtl of multiplexer is
 begin
 
-    with SEL select
-        X <= A(0) when (SEL = "00") else
-            A(1) when (SEL = "01") else
-            A(2) when (SEL = "10") else
-            A(3) when (SEL = "11") else A(0);
+    X <= A(0) when (SEL = "00") else
+        A(1) when (SEL = "01") else -- IIR(high)
+        A(2) when (SEL = "10") else -- IIR(low)
+        A(3) when (SEL = "11") else A(0);
 end architecture;
