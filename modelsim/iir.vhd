@@ -14,11 +14,19 @@ use ieee.numeric_std.all;
 entity iir is
     generic(bit_width : integer := 24;
         width_internal : integer := 32;
+<<<<<<< HEAD
         a0 : in integer := 4204905;
         a1 : in integer := 8409811;
         a2 : in integer := 4204905;
         b1 : in integer := -1949206066;
         b2 : in integer := 892283864
+=======
+        a0 : in integer; -- := 4204905;
+        a1 : in integer; -- := 8409811;
+        a2 : in integer; -- := 4204905;
+        b1 : in integer; -- := -1949206066;
+        b2 : in integer -- := 892283864
+>>>>>>> 7deedb230d72d2091330464569e9b58163d846bc
     );
     port (
         clk : in std_logic;
