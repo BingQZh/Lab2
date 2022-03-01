@@ -5,16 +5,19 @@ use ieee.numeric_std.all;
 entity multiplexer is
     port (
         SEL : in std_logic_vector(1 downto 0);
-        A : in std_logic_vector(3 downto 0);
-        X : out std_logic
+        nothing : in std_logic_vector(23 downto 0);
+        iir_high : in std_logic_vector(23 downto 0);
+        iir_low : in std_logic_vector(23 downto 0);
+        nothing2 : in std_logic_vector(23 downto 0);
+        X : out std_logic_vector(23 downto 0)
     );
 end multiplexer;
 
 architecture rtl of multiplexer is
 begin
 
-    X <= A(0) when (SEL = "00") else
-        A(1) when (SEL = "01") else -- IIR(high)
-        A(2) when (SEL = "10") else -- IIR(low)
-        A(3) when (SEL = "11") else A(0);
+    X <= nothing when (SEL = "00") else
+        iir_high when (SEL = "01") else -- IIR(high)
+        iir_low when (SEL = "10") else -- IIR(low)
+        nothing2 when (SEL = "11") else nothing;
 end architecture;
