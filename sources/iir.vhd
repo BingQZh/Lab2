@@ -42,7 +42,7 @@ begin
     begin
 
         if rising_edge(clk) then
-            if rst = '1' then
+            if rst = '0' then
                 x_1 <= (others => '0');
                 x_2 <= (others => '0');
                 y_2 <= (others => '0');
@@ -61,7 +61,7 @@ begin
     begin
 
         if rising_edge(clk) then
-            if rst = '1' then
+            if rst = '0' then
                 prod_a0 <= (others => '0');
                 prod_a1 <= (others => '0');
                 prod_a2 <= (others => '0');
