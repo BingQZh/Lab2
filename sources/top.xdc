@@ -5,15 +5,16 @@ set_property PACKAGE_PIN Y8 [get_ports sdata_out]
 set_property PACKAGE_PIN AA7 [get_ports sdata_in]
 set_property PACKAGE_PIN AB5 [get_ports iic_sda_io]
 set_property PACKAGE_PIN AB4 [get_ports iic_scl_io]
-set_property PACKAGE_PIN H17 [get_ports {sel_switch[0]}] # SW6
-set_property PACKAGE_PIN M15 [get_ports {sel_switch[1]}] # SW7
+set_property PACKAGE_PIN H17 [get_ports {sel0}]
+set_property PACKAGE_PIN M15 [get_ports {sel1}]
 
 set_property IOSTANDARD LVCMOS33 [get_ports mclk]
 set_property IOSTANDARD LVCMOS33 [get_ports bclk]
 set_property IOSTANDARD LVCMOS33 [get_ports lrclk]
 set_property IOSTANDARD LVCMOS33 [get_ports sdata_out]
 set_property IOSTANDARD LVCMOS33 [get_ports sdata_in]
-set_property IOSTANDARD LVCMOS33 [get_ports sel_switch]
+set_property IOSTANDARD LVCMOS25 [get_ports {sel0}]
+set_property IOSTANDARD LVCMOS25 [get_ports {sel1}]
 
 set_property IOSTANDARD LVCMOS33 [get_ports iic_sda_io]
 set_property IOSTANDARD LVCMOS33 [get_ports iic_scl_io]
