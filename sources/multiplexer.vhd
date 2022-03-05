@@ -11,6 +11,7 @@ entity multiplexer is
         iir_high : in std_logic_vector(23 downto 0);
         iir_low : in std_logic_vector(23 downto 0);
         nothing2 : in std_logic_vector(23 downto 0);
+        out_switch: out std_logic_vector(1 downto 0);
         X : out std_logic_vector(23 downto 0)
     );
 end multiplexer;
@@ -25,4 +26,5 @@ begin
         iir_high when (sel_switch = "01") else -- IIR(high)
         iir_low when (sel_switch = "10") else -- IIR(low)
         nothing2 when (sel_switch = "11") else nothing;
+   out_switch <= sel_switch;
 end architecture;
