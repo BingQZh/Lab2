@@ -30,7 +30,7 @@ entity iir is
     );
 end iir;
 
-architecture rtl of iir is
+architecture rtl of iir_low is
     -- registers capturing previous values
     signal x_1, x_2, y_1, y_2 : std_logic_vector(bit_width-1 downto 0) := (others => '0');
 
@@ -40,7 +40,7 @@ begin
 
     SET_ZREGS: process(clk)
     begin
-
+        valid_out <= valid;
         if rising_edge(clk) then
             if rst = '0' then
                 x_1 <= (others => '0');
@@ -51,70 +51,60 @@ begin
                     -- at each rising edge, the signals will be updated with previous values
                     x_1 <= x;
                     x_2 <= x_1;
+                    --y_1 <= (prod_a0 + prod_a1 + prod_a2) - (prod_b1 + prod_b2);
+                    y_1 <= std_logic_vector(resize((prod_a0 + prod_a1 + prod_a2) - (prod_b1 + prod_b2), bit_width));
                     y_2 <= y_1;
                 end if;
             end if;
         end if;
     end process;
 
-    IIR_FILTER: process(clk)
+    IIR_FILTER: process(valid)
     begin
+        if valid = '1' then
 
-        if rising_edge(clk) then
-            if rst = '0' then
-                prod_a0 <= (others => '0');
-                prod_a1 <= (others => '0');
-                prod_a2 <= (others => '0');
-                prod_b1 <= (others => '0');
-                prod_b2 <= (others => '0');
-                y_1 <= (others => '0');
-            else
-                if valid = '1' then
+                y <= std_logic_vector(resize(((resize(shift_right(resize(signed(x), width_internal) * to_signed(a0, width_internal), width_internal-2), width_internal)) + prod_a1 + prod_a2) - (prod_b1 + prod_b2), bit_width));
 
-
-                    y_1 <= std_logic_vector(resize(((
-                        resize(shift_right(resize(signed(x), width_internal) * to_signed(a0, width_internal), width_internal-2), width_internal)) -- duplicate of prod_a0
-                        + (resize(shift_right(resize(signed(x_1), width_internal) * to_signed(a1, width_internal), width_internal-2), width_internal)) -- duplicate of prod_a1
-                        + (resize(shift_right(resize(signed(x_2), width_internal) * to_signed(a2, width_internal), width_internal-2), width_internal))) -- duplicate of prod_a2
-                        - -- subtracting the feedback network (below) from the feedforward network (above)
-                        ((resize(shift_right(resize(signed((prod_a0 + prod_a1 + prod_a2) - (prod_b1 + prod_b2)), width_internal) * to_signed(b1, width_internal), width_internal-2), width_internal)) -- duplicate of prod_b1
-                        + (resize(shift_right(resize(signed(y_2), width_internal) * to_signed(b2, width_internal), width_internal-2), width_internal))), bit_width)); -- duplicate of prod_b2
-
-                    ---- CALCULATIONS FOR FEEDFORWARD NETWORK:
-                    -- multiply x by a0:
-                    prod_a0 <= resize(shift_right(resize(signed(x), width_internal) * to_signed(a0, width_internal), width_internal-2), width_internal);
-                    -- multiply x-1 by a1
-                    prod_a1 <= resize(shift_right(resize(signed(x_1), width_internal) * to_signed(a1, width_internal), width_internal-2), width_internal);
-                    -- multiply x-2 by a2
-                    prod_a2 <= resize(shift_right(resize(signed(x_2), width_internal) * to_signed(a2, width_internal), width_internal-2), width_internal);
-
-                    ---- CALCULATIONS FOR FEEDBACK NETWORK:
-                    -- multiply y-1 by b1
-                    prod_b1 <= resize(shift_right(resize(signed((prod_a0 + prod_a1 + prod_a2) - (prod_b1 + prod_b2)), width_internal) * to_signed(b1, width_internal), width_internal-2), width_internal);
-                    -- multiply y-2 by b2
-                    prod_b2 <= resize(shift_right(resize(signed(y_2), width_internal) * to_signed(b2, width_internal), width_internal-2), width_internal);
-
-                end if;
-            end if;
+                prod_a0 <= resize(shift_right(resize(signed(x), width_internal) * to_signed(a0, width_internal), width_internal-2), width_internal);
+        
         end if;
     end process;
 
-    y <= std_logic_vector(resize(((
-                        resize(shift_right(resize(signed(x), width_internal) * to_signed(a0, width_internal), width_internal-2), width_internal)) -- duplicate of prod_a0
-                        + (resize(shift_right(resize(signed(x_1), width_internal) * to_signed(a1, width_internal), width_internal-2), width_internal)) -- duplicate of prod_a1
-                        + (resize(shift_right(resize(signed(x_2), width_internal) * to_signed(a2, width_internal), width_internal-2), width_internal))) -- duplicate of prod_a2
-                        - -- subtracting the feedback network (below) from the feedforward network (above)
-                        ((resize(shift_right(resize(signed((prod_a0 + prod_a1 + prod_a2) - (prod_b1 + prod_b2)), width_internal) * to_signed(b1, width_internal), width_internal-2), width_internal)) -- duplicate of prod_b1
-                        + (resize(shift_right(resize(signed(y_2), width_internal) * to_signed(b2, width_internal), width_internal-2), width_internal))), bit_width)); -- duplicate of prod_b2
+    A1_PROC: process(rst, x_1)
+    begin
+        if rst = '1' then
+            prod_a1 <= (others => '0');
+        else
+            prod_a1 <= resize(shift_right(resize(signed(x_1), width_internal) * to_signed(a1, width_internal), width_internal-2), width_internal);
+        end if;
+    end process;
 
-    valid_out <= '1' when to_integer(unsigned(std_logic_vector(resize(((
-                        resize(shift_right(resize(signed(x), width_internal) * to_signed(a0, width_internal), width_internal-2), width_internal)) -- duplicate of prod_a0
-                        + (resize(shift_right(resize(signed(x_1), width_internal) * to_signed(a1, width_internal), width_internal-2), width_internal)) -- duplicate of prod_a1
-                        + (resize(shift_right(resize(signed(x_2), width_internal) * to_signed(a2, width_internal), width_internal-2), width_internal))) -- duplicate of prod_a2
-                        - -- subtracting the feedback network (below) from the feedforward network (above)
-                        ((resize(shift_right(resize(signed((prod_a0 + prod_a1 + prod_a2) - (prod_b1 + prod_b2)), width_internal) * to_signed(b1, width_internal), width_internal-2), width_internal)) -- duplicate of prod_b1
-                        + (resize(shift_right(resize(signed(y_2), width_internal) * to_signed(b2, width_internal), width_internal-2), width_internal))), bit_width)))) > 0 
-            else '0';
+    A2_PROC: process(rst, x_2)
+    begin
+        if rst = '1' then
+            prod_a2 <= (others => '0');
+        else
+            prod_a2 <= resize(shift_right(resize(signed(x_2), width_internal) * to_signed(a2, width_internal), width_internal-2), width_internal);
+        end if;
+    end process;
+
+    B1_PROC: process(rst, y_1)
+    begin
+        if rst = '1' then
+            prod_b1 <= (others => '0');
+        else
+            prod_b1 <= resize(shift_right(resize(signed(y_1), width_internal) * to_signed(b1, width_internal), width_internal-2), width_internal);    
+        end if;
+    end process;
+
+    B2_PROC: process(rst, y_2)
+    begin
+        if rst = '1' then
+            prod_b2 <= (others => '0');
+        else
+            prod_b2 <= resize(shift_right(resize(signed(y_2), width_internal) * to_signed(b2, width_internal), width_internal-2), width_internal);
+        end if;
+    end process;
 
 end architecture;
 
