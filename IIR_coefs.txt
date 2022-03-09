@@ -1,13 +1,36 @@
--- lowpass filter values
+[[[[[lowpass filter values]]]]]
+
+--1 1k Fc little to no sound--
 4204905
 8409811
 4204905
 -1949206066
 892283864
 
--- highpass filter values
+--2 10k Fc some sound little music--
+236431339
+472862678
+236431339
+-330245579
+202229111
 
---only high pitch----
+--3 100Fc no sound--
+45573
+91146
+45573
+-2127606898
+1054047367
+
+--4 20k Fc flickering--
+740135009
+1480270017
+740135009
+1373991412
+512806799
+
+[[[[[highpass filter values]]]]]
+
+--1000Fc music----
 978807938
 -1957615877
 978807938
@@ -15,18 +38,32 @@
 892283864
 
 
-----2: highfreq no sound----
+----2: high Fc----
 521845144
 -1043690288
 521845144
 -738308284
 275330469
 
----3: lowfreq louder high pitch---
+---3: 250Fc no change---
 1049180426
 -2098360852
 1049180426
 -2097798957
 1025180922
 
----4: lowerfreq---
+--4 10kFc nothing?--
+401554128
+-803108257
+401554128
+-330245579
+202229111
+
+--5 2.5kFc flickering--
+851670406
+-1703340812
+851670406
+-1656910755
+676029045
+
+next: 1.5k for both low & high pass

@@ -30,7 +30,7 @@ entity iir is
     );
 end iir;
 
-architecture rtl of iir_low is
+architecture rtl of iir is
     -- registers capturing previous values
     signal x_1, x_2, y_1, y_2 : std_logic_vector(bit_width-1 downto 0) := (others => '0');
 
@@ -40,8 +40,8 @@ begin
 
     SET_ZREGS: process(clk)
     begin
-        valid_out <= valid;
         if rising_edge(clk) then
+            valid_out <= valid;
             if rst = '0' then
                 x_1 <= (others => '0');
                 x_2 <= (others => '0');
@@ -66,13 +66,16 @@ begin
                 y <= std_logic_vector(resize(((resize(shift_right(resize(signed(x), width_internal) * to_signed(a0, width_internal), width_internal-2), width_internal)) + prod_a1 + prod_a2) - (prod_b1 + prod_b2), bit_width));
 
                 prod_a0 <= resize(shift_right(resize(signed(x), width_internal) * to_signed(a0, width_internal), width_internal-2), width_internal);
+        else
+            y <= (others => '0');
+            prod_a0 <= (others => '0');
         
         end if;
     end process;
 
     A1_PROC: process(rst, x_1)
     begin
-        if rst = '1' then
+        if rst = '0' then
             prod_a1 <= (others => '0');
         else
             prod_a1 <= resize(shift_right(resize(signed(x_1), width_internal) * to_signed(a1, width_internal), width_internal-2), width_internal);
@@ -81,7 +84,7 @@ begin
 
     A2_PROC: process(rst, x_2)
     begin
-        if rst = '1' then
+        if rst = '0' then
             prod_a2 <= (others => '0');
         else
             prod_a2 <= resize(shift_right(resize(signed(x_2), width_internal) * to_signed(a2, width_internal), width_internal-2), width_internal);
@@ -90,7 +93,7 @@ begin
 
     B1_PROC: process(rst, y_1)
     begin
-        if rst = '1' then
+        if rst = '0' then
             prod_b1 <= (others => '0');
         else
             prod_b1 <= resize(shift_right(resize(signed(y_1), width_internal) * to_signed(b1, width_internal), width_internal-2), width_internal);    
@@ -99,7 +102,7 @@ begin
 
     B2_PROC: process(rst, y_2)
     begin
-        if rst = '1' then
+        if rst = '0' then
             prod_b2 <= (others => '0');
         else
             prod_b2 <= resize(shift_right(resize(signed(y_2), width_internal) * to_signed(b2, width_internal), width_internal-2), width_internal);
