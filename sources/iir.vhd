@@ -66,9 +66,9 @@ begin
                 y <= std_logic_vector(resize(((resize(shift_right(resize(signed(x), width_internal) * to_signed(a0, width_internal), width_internal-2), width_internal)) + prod_a1 + prod_a2) - (prod_b1 + prod_b2), bit_width));
 
                 prod_a0 <= resize(shift_right(resize(signed(x), width_internal) * to_signed(a0, width_internal), width_internal-2), width_internal);
-        else
-            y <= (others => '0');
-            prod_a0 <= (others => '0');
+--        else
+--            y <= (others => '0');
+--            prod_a0 <= (others => '0');
         
         end if;
     end process;
