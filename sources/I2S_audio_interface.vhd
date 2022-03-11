@@ -82,7 +82,7 @@ begin
     begin
 
         if rising_edge(fpga_clk) then
-            if rst = '0' then
+            if rst = '1' then
                 BCLK_q2d_1 <= '0';
                 BCLK_q2d_2 <= '0';
                 BCLK_q2d_3 <= '0';
@@ -113,7 +113,7 @@ begin
     SYNCHRONIZER_COMPARISON: process(fpga_clk)
     begin
         if rising_edge(fpga_clk) then
-            if rst = '0' then
+            if rst = '1' then
                 validSDin <= '0';
                 validBCLK <= '0';
                 validLRCLK <= '0';
@@ -138,7 +138,7 @@ begin
     READING_PROC: process(fpga_clk)
     begin
         if rising_edge(fpga_clk) then
-            if rst = '0' then
+            if rst = '1' then
                 ReadState <= Initial;
                 audio_r_pl <= (others => '0');
                 audio_l_pl <= (others => '0');
@@ -223,7 +223,7 @@ begin
     WRITING_PROC: process(fpga_clk)
     begin
         if rising_edge(fpga_clk) then
-            if rst = '0' then
+            if rst = '1' then
                 WriteState <= Initial;
                 o <= 23;
                 sdata_out <= '0';

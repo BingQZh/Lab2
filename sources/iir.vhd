@@ -40,14 +40,13 @@ begin
 
     SET_ZREGS: process(clk)
     begin
-        if rising_edge(clk) then
-            valid_out <= valid;
-            if rst = '0' then
+    if rst = '1' then
                 x_1 <= (others => '0');
                 x_2 <= (others => '0');
                 y_1 <= (others => '0');
                 y_2 <= (others => '0');
-            else
+    elsif rising_edge(clk) then
+            valid_out <= valid;
                 if valid = '1' then
                     -- at each rising edge, the signals will be updated with previous values
                     x_1 <= resize(signed(x), width_internal);
@@ -58,7 +57,6 @@ begin
                     y_2 <= y_1;
                 end if;
             end if;
-        end if;
     end process;
 
  y64 <= shift_right(
@@ -78,12 +76,12 @@ end architecture;
 -- a0 = 0.003916123487156427    4204905
 -- a1 = 0.007832246974312854    8409811
 -- a2 = 0.003916123487156427    4204905
--- b1 = -1.8153396116625289     âˆ’1949206066
+-- b1 = -1.8153396116625289     âˆ?1949206066
 -- b2 = 0.8310041056111546      892283864
 
 -- highpass filter values
 -- a0 = 0.9115859293184209      978807938
--- a1 = -1.8231718586368417     âˆ’1957615877
+-- a1 = -1.8231718586368417     âˆ?1957615877
 -- a2 = 0.9115859293184209      978807938
--- b1 = -1.8153396116625289     âˆ’1949206066
+-- b1 = -1.8153396116625289     âˆ?1949206066
 -- b2 = 0.8310041056111546      892283864
