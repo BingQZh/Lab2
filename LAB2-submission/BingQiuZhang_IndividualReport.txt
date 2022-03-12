@@ -1,0 +1,3 @@
+Report:
+
+Worked on vivado and vitus validation, block design debugging, iir and mux source codes.
