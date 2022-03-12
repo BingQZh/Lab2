@@ -1,7 +1,0 @@
-# compile vhdl design source files
-vhdl xil_defaultlib  \
-"../../../../../sources/I2S_audio_interface.vhd" \
-"../../../../../sources/I2S_audio_interface_tb.vhd" \
-
-# Do not sort compile order
-nosort
