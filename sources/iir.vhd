@@ -42,7 +42,7 @@ begin
     begin
         if rising_edge(clk) then
             valid_out <= valid;
-            if rst = '0' then
+            if rst = '1' then
                 x_1 <= (others => '0');
                 x_2 <= (others => '0');
                 y_1 <= (others => '0');

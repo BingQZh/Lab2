@@ -42,7 +42,7 @@ architecture rtl of I2S_audio_interface is
     type Reading is (Initial, StartLeft, ReadLeft, EndLeft, StartRight, ReadRight); -- FSM states for reading/deserializing
     signal ReadState : Reading := Initial;
 
-    type Writing is (Initial, StartLeft, WriteLeft, EndLeft, StartRight, WriteRight); -- FSM states for writing/serializing
+    type Writing is (Initial, Fix, StartLeft, WriteLeft, EndLeft, StartRight, WriteRight); -- FSM states for writing/serializing
     signal WriteState : Writing := Initial;
 
     -- signal to collect individual bits into 24 bit vector
@@ -82,7 +82,7 @@ begin
     begin
 
         if rising_edge(fpga_clk) then
-            if rst = '0' then
+            if rst = '1' then
                 BCLK_q2d_1 <= '0';
                 BCLK_q2d_2 <= '0';
                 BCLK_q2d_3 <= '0';
@@ -113,7 +113,7 @@ begin
     SYNCHRONIZER_COMPARISON: process(fpga_clk)
     begin
         if rising_edge(fpga_clk) then
-            if rst = '0' then
+            if rst = '1' then
                 validSDin <= '0';
                 validBCLK <= '0';
                 validLRCLK <= '0';
@@ -138,7 +138,7 @@ begin
     READING_PROC: process(fpga_clk)
     begin
         if rising_edge(fpga_clk) then
-            if rst = '0' then
+            if rst = '1' then
                 ReadState <= Initial;
                 audio_r_pl <= (others => '0');
                 audio_l_pl <= (others => '0');
@@ -153,8 +153,9 @@ begin
                     -- At the falling edge, we will move on to StartLeft state
                     when Initial =>
                         read_states <= "000";
+                        audio_valid_pl <= '0';
                         if Falling_Edge_Check(LRCLK_q2d_2, LRCLK_q2d_3) = '1' then -- falling edge of LR clk;
-                            audio_valid_pl <= '0';
+                           -- audio_valid_pl <= '0';
                             ReadState <= StartLeft;
                         end if;
 
@@ -223,7 +224,7 @@ begin
     WRITING_PROC: process(fpga_clk)
     begin
         if rising_edge(fpga_clk) then
-            if rst = '0' then
+            if rst = '1' then
                 WriteState <= Initial;
                 o <= 23;
                 sdata_out <= '0';
@@ -237,9 +238,12 @@ begin
                     when Initial =>
                         write_states <= "000";
                         if audio_valid_adau = '1' then
-                            if Falling_Edge_Check(LRCLK_q2d_2, LRCLK_q2d_3) = '1' then
-                                WriteState <= StartLeft;
-                            end if;
+                            WriteState <= Fix;
+                        end if;
+                        
+                    when Fix =>
+                        if Falling_Edge_Check(LRCLK_q2d_2, LRCLK_q2d_3) = '1' then
+                            WriteState <= StartLeft;
                         end if;
 
                     -- In this state, we are checking for the rising edge of the B clk
