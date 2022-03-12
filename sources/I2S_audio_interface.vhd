@@ -142,7 +142,6 @@ begin
                 audio_l_pl <= (others => '0');
                 i <= 0;
                 audio_valid_pl <= '0';
-                read_states <= "111";
             else
             
                 case ReadState is
@@ -150,7 +149,6 @@ begin
                     -- In this state, we are checking for the first falling edge of the LR clk
                     -- At the falling edge, we will move on to StartLeft state
                     when Initial =>
-                        read_states <= "000";
                         audio_valid_pl <= '0';
                         if Falling_Edge_Check(LRCLK_q2d_2, LRCLK_q2d_3) = '1' then -- falling edge of LR clk;
                            -- audio_valid_pl <= '0';
@@ -161,7 +159,6 @@ begin
                     -- We can only start reading the bits after the rising edge of B clk
                     -- Once we see the rising edge of the B clk, we move on to the ReadLeft state
                     when StartLeft =>
-                        read_states <= "001";
                         if Rising_Edge_Check(BCLK_q2d_2, BCLK_q2d_3) = '1' then -- rising edge of B clk;
                         --wait until bResults(1) = '1'; --rising_edge(BCLK_q2d_3);
                             ReadState <= ReadLeft;
@@ -171,7 +168,6 @@ begin
                     -- In this state, we are reading the bits and putting it into a 24 bit vector
                     -- After reading 24 bits, we will move on the the EndLeft state
                     when ReadLeft =>
-                        read_states <= "010";
                         if Rising_Edge_Check(BCLK_q2d_2, BCLK_q2d_3) = '1' then -- rising edge of B clk
                             if i >= 0 then
                                 LeftChannel(i) <= validSDin;
@@ -184,7 +180,6 @@ begin
                     -- In this state, we are checking when the right channel begins
                     -- When LR clk has a rising edge, we will move on to StartRight state
                     when EndLeft =>
-                        read_states <= "011";
                         if Rising_Edge_Check(LRCLK_q2d_2, LRCLK_q2d_3) = '1' then
                             ReadState <= StartRight;
                         end if;
@@ -192,7 +187,6 @@ begin
                     -- In this state, we are checking for the rising edge of the B clk
                     -- Then we will move onto ReadRight state
                     when StartRight =>
-                        read_states <= "100";
                         if Rising_Edge_Check(BCLK_q2d_2, BCLK_q2d_3) = '1' then
                             ReadState <= ReadRight;
                             i <= 23;
@@ -201,7 +195,6 @@ begin
                     -- In this state, we are reading the bits and putting it into a 24 bit vector
                     -- After reading 24 bits, we will output the vectors and reset the state to Initial
                     when ReadRight =>
-                        read_states <= "101";
                         if Rising_Edge_Check(BCLK_q2d_2, BCLK_q2d_3) = '1' then 
                             if i >= 0 then
                                 RightChannel(i) <= validSDin;
