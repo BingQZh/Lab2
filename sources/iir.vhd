@@ -40,25 +40,23 @@ begin
 
     SET_ZREGS: process(clk)
     begin
-        if rising_edge(clk) then
+        if rst = '1' then
+            x_1 <= (others => '0');
+            x_2 <= (others => '0');
+            y_1 <= (others => '0');
+            y_2 <= (others => '0');
+        elsif rising_edge(clk) then
             valid_out <= valid;
-            if rst = '1' then
-                x_1 <= (others => '0');
-                x_2 <= (others => '0');
-                y_1 <= (others => '0');
-                y_2 <= (others => '0');
-    elsif rising_edge(clk) then
-            valid_out <= valid;
-                if valid = '1' then
-                    -- at each rising edge, the signals will be updated with previous values
-                    x_1 <= resize(signed(x), width_internal);
-                    x_2 <= x_1;
-                    --y_1 <= (prod_a0 + prod_a1 + prod_a2) - (prod_b1 + prod_b2);
+            if valid = '1' then
+                -- at each rising edge, the signals will be updated with previous values
+                x_1 <= resize(signed(x), width_internal);
+                x_2 <= x_1;
+                --y_1 <= (prod_a0 + prod_a1 + prod_a2) - (prod_b1 + prod_b2);
 --                    y_1 <= std_logic_vector(resize((prod_a0 + prod_a1 + prod_a2) - (prod_b1 + prod_b2), bit_width));
-                    y_1 <= resize(y64, width_internal);
-                    y_2 <= y_1;
-                end if;
+                y_1 <= resize(y64, width_internal);
+                y_2 <= y_1;
             end if;
+        end if;
     end process;
 
  y64 <= shift_right(
